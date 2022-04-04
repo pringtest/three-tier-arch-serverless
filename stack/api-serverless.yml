@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: api-serverless
+
+Parameters:
+  NodeEnv:
+    Type: String
+  Region:
+    Type: String
+  Project:
+    Type: String
+  LambdaRunTime:
+    Type: String
+  UserTableName:
+    Type: String
+
+Resources:
+  ApiGateway:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref NodeEnv
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - "*"
+        AllowMethods:
+          - GET
+          - POST
+        MaxAge: 600
+        AllowCredentials: False
+
+  GetDynamoDBFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../src/get_DynamoDB
+      Handler: index.handler
+      Runtime: !Ref LambdaRunTime
+      MemorySize: 128
+      Timeout: 15
+      Policies:
+        - Version: '2012-10-17' # Policy Document
+          Statement:
+          - Action: "*"
+            Effect: Allow
+            Resource: "*"
+      Environment:
+        Variables:
+          REGION: !Ref Region
+          USER_TABLE_NAME: !Ref UserTableName
+      Events:
+        HttpApiEvent:
+          Type: HttpApi
+          Properties: 
+            ApiId: !Ref ApiGateway
+            Method: GET
+            Path: /dynamodb
+
+

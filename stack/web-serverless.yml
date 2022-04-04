@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: web serverless
+
+Parameters:
+  NodeEnv:
+    Type: String
+  Region:
+    Type: String
+  Project:
+    Type: String
+  LambdaRunTime:
+    Type: String
+
+Resources:
+  S3BucketHosting:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+      WebsiteConfiguration: 
+        IndexDocument: 'index.html'
+        ErrorDocument: '404.html'
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - "*"
+  
+  S3BucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties: 
+      Bucket: !Ref S3BucketHosting
+      PolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - s3:GetObject
+            Resource:
+              - !Sub ${S3BucketHosting.Arn}/*
+            Principal: "*"
+
+Outputs:
+  S3BucketHostingName:
+    Value: !Ref S3BucketHosting
+  WebsiteURL:
+    Value: !GetAtt
+      - S3BucketHosting
+      - WebsiteURL
+    Description: URL for website hosted on S3
+  S3BucketSecureURL:
+    Value: !Join
+      - ''
+      - - 'https://'
+        - !GetAtt
+          - S3BucketHosting
+          - DomainName
+    Description: Name of S3 bucket to hold website content
+
+

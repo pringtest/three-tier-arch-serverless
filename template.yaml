@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: dev-mybarber-auth
+
+Parameters:
+  NodeEnv:
+    Type: String
+    Default: dev
+  Region:
+    Type: String
+    Default: ap-southeast-1
+  Project: 
+    Type: String
+    Default: lab
+  LambdaRunTime:
+    Type: String
+    Default: nodejs14.x
+
+Resources:
+  Databases:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: './stack/database.yml'
+      Parameters:
+        NodeEnv: !Ref NodeEnv
+        Region: !Ref Region
+        Project: !Ref Project
+        LambdaRunTime: !Ref LambdaRunTime
+    
+  WebServerless:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: './stack/web-serverless.yml'
+      Parameters:
+        NodeEnv: !Ref NodeEnv
+        Region: !Ref Region
+        Project: !Ref Project
+        LambdaRunTime: !Ref LambdaRunTime
+  
+  ApiServerless:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: './stack/api-serverless.yml'
+      Parameters:
+        NodeEnv: !Ref NodeEnv
+        Region: !Ref Region
+        Project: !Ref Project
+        LambdaRunTime: !Ref LambdaRunTime
+        UserTableName: !GetAtt Databases.Outputs.UserTableName
+
+  

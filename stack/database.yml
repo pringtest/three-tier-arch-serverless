@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'database'
+
+Parameters:
+  NodeEnv:
+    Type: String
+  Region:
+    Type: String
+  Project:
+    Type: String
+  LambdaRunTime:
+    Type: String
+
+Resources:
+  # create s3
+  ImageBucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Sub '${NodeEnv}-${Project}-image'
+      AccessControl: Private
+
+  # create dynamoDB
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: UserEmail
+          AttributeType: S
+      KeySchema:
+        - AttributeName: UserEmail
+          KeyType: HASH
+      BillingMode: "PAY_PER_REQUEST"
+
+Outputs:
+  ImageBucketName:
+    Value: !Ref ImageBucket
+  UserTableName:
+    Value: !Ref UserTable
+  

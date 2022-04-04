@@ -1,0 +1,11 @@
+{
+  "name": "three-tier-arch-serverless",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://pringtest@github.com/pringtest/three-tier-arch-serverless.git",
+  "author": "syamim <syamim_nsl@yahoo.com>",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "sh ./script/deploy.sh"
+  }
+}
