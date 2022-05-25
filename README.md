@@ -8,20 +8,14 @@
 - AWS LAMBDA
 - AWS DYNAMODB
 
-## Build and Deploy
+## Deploy Architecture
+1. Make sure that you already setup aws profile in your local and execute below command to run script that execute sam cli for architecure deployment. Use `--guided` for first time deployment only.
 
-1. First time deployment run this command
-```bash
-sam build && sam deploy --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --no-confirm-changeset
-```
-
-2. Second time deployment run this command
-```bash
-yarn deploy
+```sh
+yarn deploy --guided
 ```
 
 ## Static Website Hosting Setup
-
 1. git clone the repo
 ```bash
 git clone https://github.com/pringtest/demo_web_server.git
